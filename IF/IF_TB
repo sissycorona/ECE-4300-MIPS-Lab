@@ -1,1 +1,32 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
 
+module if_tb;
+    reg clk;
+    reg reset;
+
+    // Outputs
+    wire [31:0] pc_out;    // Program Counter output
+    wire [31:0] instr_out; // Instruction output
+
+    // Instantiate the IF stage
+    mips_if dut (
+        .clk(clk),
+        .reset(reset),
+        .pc_out(pc_out),
+        .instr_out(instr_out)
+    );
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    initial begin
+        $monitor("Time: %0dns, PC: %h, Instruction: %h", $time, pc_out, instr_out);
+        reset = 1;
+        #10 reset = 0;
+        #100 $finish;
+    end
+endmodule
